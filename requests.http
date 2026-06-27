@@ -1,0 +1,29 @@
+POST http://localhost:8000/category/create
+Content-Type: application/json
+
+{
+  "title": "Tarix"
+}
+
+###
+
+POST http://localhost:8000/languages/create
+Content-Type: application/json
+
+{
+  "title": "O'zbekcha",
+  "code": "uz"
+}
+
+###
+
+PATCH http://localhost:8000/languages/update/1
+Content-Type: application/json
+
+{
+  "code": "uz"
+}
+
+###
+
+GET http://localhost:8000/languages/list
