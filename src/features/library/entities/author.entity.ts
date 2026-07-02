@@ -1,22 +1,8 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity } from 'typeorm';
+import { BaseModel } from '@core/base.model';
 
 @Entity('authors')
-export class Author {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column({ type: 'varchar', length: 64 })
+export class Author extends BaseModel {
+  @Column({ length: 64 })
   fullName: string;
-
-  @CreateDateColumn({ type: 'timestamptz' })
-  createdAt: string;
-
-  @UpdateDateColumn({ type: 'timestamptz' })
-  updatedAt: string;
 }
