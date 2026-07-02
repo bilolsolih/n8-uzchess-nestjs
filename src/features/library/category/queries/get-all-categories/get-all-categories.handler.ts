@@ -4,6 +4,7 @@ import {FindOptionsWhere, ILike} from 'typeorm';
 import {Category} from '@/features/library/entities/category.entity';
 import {plainToInstance} from 'class-transformer';
 import {GetAllCategoriesResponse} from './get-all-categories.response';
+import {PaginatedResult} from "@/features/common/dtos/paginated-result.dto";
 
 @QueryHandler(GetAllCategoriesQuery)
 export class GetAllCategoriesHandler implements IQueryHandler<GetAllCategoriesQuery> {
@@ -16,7 +17,15 @@ export class GetAllCategoriesHandler implements IQueryHandler<GetAllCategoriesQu
         if (query.search)
             where.title = ILike(`%${query.search}%`);
 
+        const totalCount = await Category.countBy(where);
+        const totalPages = Math.ceil(totalCount / take);
+        const hasNext = currentPage < totalPages;
+        const hasPrevious = currentPage > 1;
         const categories = await Category.find({where: where, skip: skip, take: take});
-        return plainToInstance(GetAllCategoriesResponse, categories, {excludeExtraneousValues: true});
+        const data = plainToInstance(GetAllCategoriesResponse, categories, {excludeExtraneousValues: true});
+
+        return {
+            totalCount, totalPages, currentPage, hasNext, hasPrevious, data
+        } as PaginatedResult<GetAllCategoriesResponse>;
     }
 }

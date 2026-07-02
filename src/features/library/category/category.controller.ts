@@ -1,9 +1,11 @@
 import {Body, Controller, Get, Param, ParseIntPipe, Patch, Post, Query} from '@nestjs/common';
-import {ApiBearerAuth} from '@nestjs/swagger';
-import {CreateCategoryRequest} from '@/features/library/category/commands/create-category/create-category.request';
-import {UpdateCategoryRequest} from '@/features/library/category/commands/update-category/update-category.request';
+import {ApiBearerAuth, ApiOkResponse} from '@nestjs/swagger';
+import {CreateCategoryRequest} from './commands/create-category/create-category.request';
+import {UpdateCategoryRequest} from './commands/update-category/update-category.request';
 import {CommandBus, QueryBus} from '@nestjs/cqrs';
 import {GetAllCategoriesRequest} from './queries/get-all-categories/get-all-categories.request';
+import {GetAllCategoriesResponse} from "./queries/get-all-categories/get-all-categories.response";
+import {PaginatedResultDto} from "@/features/common/dtos/paginated-result.dto";
 
 @Controller('categories')
 @ApiBearerAuth()
@@ -15,6 +17,7 @@ export class CategoryController {
     }
 
     @Get('list')
+    @ApiOkResponse({type: PaginatedResultDto(GetAllCategoriesResponse)})
     async getAll(@Query() filters: GetAllCategoriesRequest) {
         return await this.queryBus.execute(filters.toQuery());
     }
