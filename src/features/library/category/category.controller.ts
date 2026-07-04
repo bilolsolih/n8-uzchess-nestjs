@@ -6,6 +6,8 @@ import {CommandBus, QueryBus} from '@nestjs/cqrs';
 import {GetAllCategoriesRequest} from './queries/get-all-categories/get-all-categories.request';
 import {GetAllCategoriesResponse} from "./queries/get-all-categories/get-all-categories.response";
 import {PaginatedResultDto} from "@/features/common/dtos/paginated-result.dto";
+import {Roles} from "@core/decorators/roles.decorator";
+import {Role} from "@core/enums/role.enum";
 
 @Controller('categories')
 @ApiBearerAuth()
@@ -18,11 +20,13 @@ export class CategoryController {
 
     @Get('list')
     @ApiOkResponse({type: PaginatedResultDto(GetAllCategoriesResponse)})
+    @Roles(Role.Admin)
     async getAll(@Query() filters: GetAllCategoriesRequest) {
         return await this.queryBus.execute(filters.toQuery());
     }
 
     @Post('create')
+    @Roles(Role.Admin, Role.User)
     async create(@Body() payload: CreateCategoryRequest) {
         return await this.cmdBus.execute(payload.toCommand());
     }
