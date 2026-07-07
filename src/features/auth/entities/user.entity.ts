@@ -1,6 +1,8 @@
 import {BaseModel} from "@core/base.model";
-import {Column, Entity} from "typeorm";
+import {Column, Entity, OneToMany} from "typeorm";
 import {Role} from "@core/enums/role.enum";
+import {UserRole} from "@/features/auth/entities/user-role.entity";
+import {UserPermission} from "@/features/auth/entities/user-permission.entity";
 
 
 @Entity('users')
@@ -16,4 +18,11 @@ export class User extends BaseModel {
 
     @Column({type: "enum", enum: Role, default: Role.User})
     role: Role;
+
+
+    @OneToMany(() => UserRole, (ur) => ur.user)
+    userRoles: UserRole[];
+
+    @OneToMany(() => UserPermission, (ur) => ur.user)
+    userPermissions: UserPermission[];
 }
