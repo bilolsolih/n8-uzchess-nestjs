@@ -6,6 +6,6 @@ export class Language extends BaseModel {
   @Column({ length: 64, unique: true })
   title: string;
 
-  @Column({ length: 4, unique: true })
+  @Column({ length: 6, unique: true })
   code: string;
 }

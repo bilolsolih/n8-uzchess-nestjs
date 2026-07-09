@@ -1,17 +1,38 @@
-import { Module } from '@nestjs/common';
-import { LibraryModule } from './features/library/library.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { typeOrmConfig } from '@core/configs/typeorm.config';
-import { CommonModule } from '@/features/common/common.module';
-import { CqrsModule } from '@nestjs/cqrs';
+import {Module} from '@nestjs/common';
+import {LibraryModule} from './features/library/library.module';
+import {TypeOrmModule} from '@nestjs/typeorm';
+import {typeOrmConfig} from '@core/configs/typeorm.config';
+import {CommonModule} from '@/features/common/common.module';
+import {CqrsModule} from '@nestjs/cqrs';
+import {JwtModule} from "@nestjs/jwt";
+import {AuthModule} from "@/features/auth/auth.module";
+import {APP_GUARD} from "@nestjs/core";
+import {AuthGuard} from "@core/guards/auth.guard";
+import {PermissionGuard} from "@core/guards/permission.guard";
+import {CacheModule} from "@nestjs/cache-manager";
 
 @Module({
-  imports: [
-    TypeOrmModule.forRoot(typeOrmConfig),
-    CqrsModule.forRoot(),
-    LibraryModule,
-    CommonModule,
-  ],
+    imports: [
+        JwtModule.register({
+            global: true,
+            secret: "ForTheLoveOfGodDontUseThisInProduction",
+            signOptions: {
+                expiresIn: '1h'
+            }
+        }),
+        TypeOrmModule.forRoot(typeOrmConfig),
+        CqrsModule.forRoot(),
+        CacheModule.register({
+            ttl: 1000 * 60 * 30
+        }),
+        AuthModule,
+        LibraryModule,
+        CommonModule,
+    ],
+    providers: [
+        {provide: APP_GUARD, useClass: AuthGuard},
+        {provide: APP_GUARD, useClass: PermissionGuard},
+    ]
 })
 export class AppModule {
 }
