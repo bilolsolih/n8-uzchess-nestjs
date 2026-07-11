@@ -2,12 +2,9 @@ import {Body, Controller, Get, Post, Query, UploadedFile, UseInterceptors} from 
 import {CreateDifficultyRequest} from "./commands/create-difficulty/create-difficulty.request";
 import {FileInterceptor} from "@nestjs/platform-express";
 import {multerStorageOptions} from "@core/configs/multer.config";
-import {Difficulty} from "@/features/library/entities/difficulty.entity";
 import {ApiConsumes} from "@nestjs/swagger";
 import {CommandBus, QueryBus} from "@nestjs/cqrs";
-import {
-    GetAllDifficultiesRequest
-} from "@/features/library/difficulty/queries/get-all-difficulties/get-all-difficulties.request";
+import {GetAllDifficultiesRequest} from "./queries/get-all-difficulties/get-all-difficulties.request";
 
 @Controller('difficulties')
 export class DifficultyController {
@@ -19,7 +16,12 @@ export class DifficultyController {
 
     @Post('create')
     @ApiConsumes('multipart/form-data')
-    @UseInterceptors(FileInterceptor('icon', {storage: multerStorageOptions}))
+    @UseInterceptors(FileInterceptor('icon', {
+        storage: multerStorageOptions({
+            destination: 'icons',
+            extensions: ['svg']
+        }),
+    }))
     async create(@Body() payload: CreateDifficultyRequest, @UploadedFile() icon: Express.Multer.File) {
         return await this.cmdBus.execute(payload.toCommand(icon));
     }
