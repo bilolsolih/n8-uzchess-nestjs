@@ -18,5 +18,4 @@ async function bootstrap() {
     configureSwagger(app);
     await app.listen(8000);
 }
-
 bootstrap();

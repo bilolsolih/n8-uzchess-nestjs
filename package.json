@@ -4,7 +4,7 @@
   "description": "",
   "author": "",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
@@ -18,8 +18,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "generate": "nest build && npx typeorm -d ./dist/data-source.js migration:generate src/migrations/uzchess",
-    "migrate": "nest build && npx typeorm -d ./dist/data-source.js migration:run",
+    "generate": "npm run build && npx typeorm -d ./dist/data-source.js migration:generate src/migrations/uzchess",
+    "migrate": "npm run build && npx typeorm -d ./dist/data-source.js migration:run",
     "revert": "npx typeorm -d ./dist/data-source.js migration:revert"
   },
   "dependencies": {
@@ -30,6 +30,7 @@
     "@nestjs/jwt": "^11.0.2",
     "@nestjs/platform-express": "^11.0.1",
     "@nestjs/typeorm": "^11.0.2",
+    "@nestjs/swagger": "^11.4.4",
     "argon2": "^0.44.0",
     "cache-manager": "^7.2.9",
     "class-transformer": "^0.5.1",
@@ -43,10 +44,9 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
     "@eslint/js": "^9.18.0",
-    "@nestjs/cli": "^11.0.0",
     "@nestjs/schematics": "^11.0.0",
-    "@nestjs/swagger": "^11.4.4",
     "@nestjs/testing": "^11.0.1",
+    "@nestjs/cli": "^11.0.0",
     "@swc/cli": "^0.8.1",
     "@swc/core": "^1.15.43",
     "@types/express": "^5.0.0",
